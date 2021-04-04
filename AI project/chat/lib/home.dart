@@ -1,5 +1,9 @@
+import 'package:chat/addFriend.dart';
 import 'package:chat/components/chat.dart';
+import 'package:chat/models/userDetail.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'models/chat_users.dart';
 
@@ -9,6 +13,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
+  FirebaseFirestore _firestore= FirebaseFirestore.instance;
   List<ChatUsers>chatUsers=[
  ChatUsers(text: 'Apnaa', secondarytext: 'Kul mil Kai baat karty', image: "images/userImage8.jpg", time:"Feb 24"),
     ChatUsers(text: 'Raheel', secondarytext: 'Pani wala aya tha?', image: 'images/userImage4.jpg', time:' Jan 2'),
@@ -26,81 +32,100 @@ class _HomeScreenState extends State<HomeScreen> {
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
       body: SafeArea(
-        child: SingleChildScrollView(
-            child: Column(
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 16, right: 16, top: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Chats',
-                    style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 12.0,vertical: 15.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Chats',
+                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+              ),
+              GestureDetector(
+                onTap: (){
+                  Navigator.push(context, MaterialPageRoute(builder:(context)=>AddFriends()));
+                },
+                child: Container(
+                  padding: const EdgeInsets.only(
+                      left: 8, right: 8, top: 2, bottom: 2),
+                  height: 30,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30),
+                      color: Colors.pink[50]),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.add,
+                        color: Colors.pink,
+                        size: 30,
+                      ),
+                      SizedBox(
+                        width: 2,
+                      ),
+                      Text(
+                        'New',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 19),
+                      )
+                    ],
                   ),
-                  Container(
-                    padding: const EdgeInsets.only(
-                        left: 8, right: 8, top: 2, bottom: 2),
-                    height: 30,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
-                        color: Colors.pink[50]),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.add,
-                          color: Colors.pink,
-                          size: 30,
-                        ),
-                        SizedBox(
-                          width: 2,
-                        ),
-                        Text(
-                          'New',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 19),
-                        )
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.all(16),
-              child: TextField(
-                decoration: InputDecoration(
-                    hintText: 'Search....',
-                    focusedBorder: InputBorder.none,
-                    hintStyle: TextStyle(
-                      color: Colors.grey.shade400,
-                    ),
-                    prefixIcon: Icon(
-                      Icons.search,
-                      color: Colors.grey.shade400,
-                    ),
-                    filled: true,
-                    fillColor: Colors.grey.shade100,
-                    contentPadding: EdgeInsets.all(8),
-                    enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        borderSide: BorderSide(color: Colors.grey.shade100))),
-              ),
-            ),
-            ListView.builder(
-              itemCount: chatUsers.length,
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemBuilder: (context, index){
-                return ChatUsersList(text: chatUsers[index].text,
-                    secondarytext: chatUsers[index].secondarytext,
-                    image: chatUsers[index].image,
-                    time: chatUsers[index].time);
+                ),
+              )
+            ],
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 12.0),
+          child: TextFormField(
+            decoration: InputDecoration(
+                hintText: 'Search....',
+                focusedBorder: InputBorder.none,
+                hintStyle: TextStyle(
+                  color: Colors.grey.shade400,
+                ),
+                prefixIcon: Icon(
+                  Icons.search,
+                  color: Colors.grey.shade400,
+                ),
+                filled: true,
+                fillColor: Colors.grey.shade100,
+                contentPadding: EdgeInsets.all(8),
+                enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30),
+                    borderSide: BorderSide(color: Colors.grey.shade100))),
+          ),
+        ),
+        Container(
+          height: height*0.755,
+          child: SingleChildScrollView(
+            child: StreamBuilder(
+              stream:_firestore.collection('user').doc(Provider.of<UserDetails>(context,listen: false).getUserDocID).collection('friends').snapshots(),
+              builder: (context,snapshot){
+                if(snapshot.hasError)
+                  {
+                    return CircularProgressIndicator();
+                  }
+                if(snapshot.connectionState==ConnectionState.waiting)
+                  {
+                    return CircularProgressIndicator();
+                  }
+
+                List<String> docIds=[];
+                final data = snapshot.data.docs;
+                for(var frnds in data)
+                  {
+                    docIds.add(frnds.data()['userDocId']);
+                  }
+                return Column();
               },
             )
+          ),
+        )
           ],
-        )),
+        ),
       ),
     );
   }

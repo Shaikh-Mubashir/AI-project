@@ -35,6 +35,7 @@ dependencies:
   cloud_firestore: ^0.16.0
   form_field_validator:
   flutter_progress_hud:
+  firebase_storage:
 
 dev_dependencies:
   flutter_test:

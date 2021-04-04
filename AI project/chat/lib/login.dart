@@ -34,6 +34,7 @@ class _LoginState extends State<Login> {
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 40),
                       child: TextFormField(
+                        keyboardType: TextInputType.emailAddress,
                         validator: MultiValidator([
                           RequiredValidator(errorText: '* Required Field'),
                           EmailValidator(errorText: '* Email Badly Formatted')
@@ -56,7 +57,11 @@ class _LoginState extends State<Login> {
                       child: TextFormField(
                         validator: MultiValidator([
                           RequiredValidator(errorText: '* Required Field'),
-                        //  RangeValidator(min: 8, max: 12, errorText: '* Password should be in the range of 8-12')
+                          LengthRangeValidator(
+                              min: 8,
+                              max: 10,
+                              errorText:
+                              'Your Password should be in the range of 8-10')
                         ]),
                         controller: _password,
                         decoration: InputDecoration(

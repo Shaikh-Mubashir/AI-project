@@ -18,6 +18,7 @@ class _SignUpState extends State<SignUp> {
   TextEditingController _password = TextEditingController();
   TextEditingController _cpassword = TextEditingController();
   CreateUser _createUser;
+  AlertState _alertBoxes;
   GlobalKey<FormState> _key= GlobalKey<FormState>();
 
   @override
@@ -67,6 +68,7 @@ class _SignUpState extends State<SignUp> {
                         height: 20,
                       ),
                       TextFormField(
+                          keyboardType: TextInputType.emailAddress,
                         validator: MultiValidator([
                           RequiredValidator(errorText: '* Required Field'),
                           EmailValidator(errorText: '* Email badly formatted')
@@ -83,6 +85,7 @@ class _SignUpState extends State<SignUp> {
                         height: 20,
                       ),
                       TextFormField(
+
                         validator: MultiValidator([
                           RequiredValidator(errorText: '* Required Field'),
                          // RangeValidator(min: 8, max: 10, errorText: '* Password should be in the range of 8-10')
@@ -129,7 +132,9 @@ class _SignUpState extends State<SignUp> {
                               bool check = await _createUser.registerUser(
                                   _username.text, _email.text, _password.text);
                               if (check == true) {
+                                print('aaa');
                                 progress.dismiss();
+
                                 Navigator.push(context,
                                     MaterialPageRoute(
                                         builder: (context) => Login()));
@@ -137,13 +142,14 @@ class _SignUpState extends State<SignUp> {
                               else {
                                 progress.dismiss();
                                 print('Nhi chla kaam');
-
+                               _alertBoxes= AlertState();
                                 ///alert box lgaana
                               }
                             }
                             catch(e){
                               progress.dismiss();
                               ///alert box lgaana
+
                             }
                             //Provider.of<UserDetails>(context,listen: false).setUserDetails(name: _username.text,email: _email.text,password: _password.text);
                           }
@@ -158,6 +164,43 @@ class _SignUpState extends State<SignUp> {
           ),
         ),
       )
+    );
+  }
+}
+class AlertState extends State {
+
+  showAlert(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: new Text('Alert Message Title Text.'),
+          actions: <Widget>[
+            FlatButton(
+              child: new Text("OK"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child:
+        RaisedButton(
+          onPressed: () => showAlert(context),
+          child: Text('Click Here To Show Alert Dialog Box'),
+          textColor: Colors.white,
+          color: Colors.green,
+          padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+        ),
+      ),
     );
   }
 }

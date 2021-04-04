@@ -55,7 +55,7 @@ class CreateUser {
 
 
   Future<void> getChatuser(context, String checkemail) async {
-    String username, email, pass, cpass;
+    String username, email, pass, cpass,uid;
     final user = await _firestore
         .collection('user')
         .where('email', isEqualTo: checkemail)
@@ -64,7 +64,8 @@ class CreateUser {
       username = data.data()['name'];
       email = data.data()['email'];
       pass = data.data()['password'];
+      uid=data.id;
     }
-    Provider.of<UserDetails>(context,listen: false).setUserDetails(name: username,email: email,password: pass);
+    Provider.of<UserDetails>(context,listen: false).setUserDetails(name: username,email: email,password: pass,uid: uid);
   }
 }
