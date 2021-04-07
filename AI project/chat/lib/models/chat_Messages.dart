@@ -4,6 +4,7 @@ import '../chatDetailPage.dart';
 
 class ChatMessage{
   String Messages;
-  MessageType type;
-  ChatMessage({@required this.Messages,@required this.type});
+  bool isMe;
+  String dateTime,type;
+  ChatMessage({@required this.Messages, this.isMe,this.dateTime,this.type });
 }

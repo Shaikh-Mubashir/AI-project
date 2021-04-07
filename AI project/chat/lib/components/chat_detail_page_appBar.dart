@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 class ChatDetailPageAppBar extends StatelessWidget implements PreferredSizeWidget{
+  String receiverName;
+  ChatDetailPageAppBar({this.receiverName});
   @override
   Widget build(BuildContext context) {
     return AppBar(
@@ -27,7 +29,7 @@ class ChatDetailPageAppBar extends StatelessWidget implements PreferredSizeWidge
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text('Raheel',style: TextStyle(
+                    Text(receiverName,style: TextStyle(
                       fontWeight: FontWeight.w600
                           ,fontSize: 20
                     ),),

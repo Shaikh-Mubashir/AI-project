@@ -1,12 +1,13 @@
 import 'package:chat/chatDetailPage.dart';
 import 'package:flutter/material.dart';
 class ChatUsersList extends StatefulWidget {
+  String msgDocId;
   String text;
   String secondarytext;
   String image;
   String time;
 
-   ChatUsersList({@required this.text, @required this.secondarytext, @required this.image,@required this.time});
+   ChatUsersList({@required this.text, @required this.secondarytext, @required this.image,@required this.time,this.msgDocId});
   @override
   _ChatUsersListState createState() => _ChatUsersListState();
 }
@@ -17,7 +18,7 @@ class _ChatUsersListState extends State<ChatUsersList> {
     return GestureDetector(
       onTap: (){
          Navigator.push(context, MaterialPageRoute(builder: (context){
-           return ChatDetailPage();
+           return ChatDetailPage(receiverName: widget.text,msgDocId: widget.msgDocId,);
          }));
       },
       child: Container(

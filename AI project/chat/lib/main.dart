@@ -1,4 +1,5 @@
 import 'package:chat/login.dart';
+import 'package:chat/models/chatsModel.dart';
 import 'package:chat/models/userDetail.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +17,7 @@ class MyApp extends StatelessWidget {
     return  MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context)=>UserDetails()),
+        ChangeNotifierProvider(create: (context)=>ChatModel())
       ],
       child: MaterialApp(
           debugShowCheckedModeBanner: false,
