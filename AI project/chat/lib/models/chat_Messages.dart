@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 
-import '../chatDetailPage.dart';
+import '../screens/chatDetailPage.dart';
 
-class ChatMessage{
+class ChatMessage {
   String Messages;
   bool isMe;
-  String dateTime,type;
-  ChatMessage({@required this.Messages, this.isMe,this.dateTime,this.type });
+  String dateTime, type;
+  ChatMessage({@required this.Messages, this.isMe, this.dateTime, this.type});
 }

@@ -17,9 +17,8 @@ class ChatModel extends ChangeNotifier {
     return _listLoaded;
   }
 
-  clearList(){
+  clearList() {
     userMessages.clear();
-    notifyListeners();
   }
 
   Future<void> getFriendsData(String userDocId, String msgDocId) async {
@@ -32,9 +31,9 @@ class ChatModel extends ChangeNotifier {
     String last = '';
     bool msgsExist = true;
     List<DateTime> dates = [];
-    DateTime maxDate=DateTime.now();
+    DateTime maxDate = DateTime.now();
     print(msgData.docs.isEmpty);
-    if(msgData.docs.isNotEmpty) {
+    if (msgData.docs.isNotEmpty) {
       print('exist');
       for (var data in msgData.docs) {
         dates.add(DateTime.parse(data.data()['dateTime']));
@@ -57,13 +56,11 @@ class ChatModel extends ChangeNotifier {
           last = 'Video exist';
         }
       }
-    }
-else {
+    } else {
       last = 'Tap here to start conversation.';
     }
 
-    userMessages.add(
-        ChatUsers(
+    userMessages.add(ChatUsers(
         docId: msgDocId,
         text: userData.data()['name'],
         secondarytext: last,

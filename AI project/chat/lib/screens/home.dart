@@ -1,12 +1,12 @@
-import 'package:chat/addFriend.dart';
 import 'package:chat/components/chat.dart';
 import 'package:chat/models/chatsModel.dart';
 import 'package:chat/models/userDetail.dart';
+import 'package:chat/screens/addFriend.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'models/chat_users.dart';
+import '../models/chat_users.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -14,7 +14,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   //  List<ChatUsers>chatUsers=[
@@ -32,8 +31,8 @@ class _HomeScreenState extends State<HomeScreen> {
     print(usersList);
     print(msgs);
     for (int i = 0; i < usersList.length; i++) {
-      await Provider.of<ChatModel>(context, listen: false).getFriendsData(
-          usersList[i], msgs[i]);
+      await Provider.of<ChatModel>(context, listen: false)
+          .getFriendsData(usersList[i], msgs[i]);
     }
     Provider.of<ChatModel>(context, listen: false).setloader(false);
     print('chl rha hai');
@@ -52,15 +51,11 @@ class _HomeScreenState extends State<HomeScreen> {
     // TODO: implement dispose
     Provider.of<ChatModel>(context, listen: false).clearList();
     super.dispose();
-
   }
 
   @override
   Widget build(BuildContext context) {
-    double height = MediaQuery
-        .of(context)
-        .size
-        .height;
+    double height = MediaQuery.of(context).size.height;
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -77,8 +72,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      Navigator.push(context, MaterialPageRoute(
-                          builder: (context) => AddFriends()));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AddFriends()));
                     },
                     child: Container(
                       padding: const EdgeInsets.only(
@@ -133,56 +130,62 @@ class _HomeScreenState extends State<HomeScreen> {
             Container(
               height: height * 0.755,
               child: StreamBuilder(
-                stream: _firestore.collection('user').doc(Provider
-                    .of<UserDetails>(context, listen: false)
-                    .getUserDocID).collection('friends').snapshots(),
+                stream: _firestore
+                    .collection('user')
+                    .doc(Provider.of<UserDetails>(context, listen: false)
+                        .getUserDocID)
+                    .collection('friends')
+                    .snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.hasError) {
-                    return CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.teal)
+                    return Center(
+                      child: CircularProgressIndicator(
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.teal)),
                     );
                   }
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.teal)
+                    return Center(
+                      child: CircularProgressIndicator(
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.teal)),
                     );
                   }
 
                   List<String> docIds = [];
-                  List<String> msgIds=[];
+                  List<String> msgIds = [];
                   final data = snapshot.data.docs;
                   for (var frnds in data) {
                     docIds.add(frnds.data()['userDocId']);
                     msgIds.add(frnds.data()['messageDocId']);
                   }
                   getUserList(docIds, msgIds);
-                  print(Provider.of<ChatModel>(context,listen: false).userMessages);
-
+                  print(Provider.of<ChatModel>(context, listen: false)
+                      .userMessages);
                   return Consumer<ChatModel>(
-                      builder: (context, data, child) {
-                        return !data.loader ?
-                        ListView.builder(
-                            itemCount: data.userMessages.length,
-                            itemBuilder: (context, i) {
-                              return data.userMessages.isEmpty?Text('You have no chats available.'):ChatUsersList(
-                                msgDocId: data.userMessages[i].docId,
-                                  text: data.userMessages[i].text,
-                                  secondarytext: data.userMessages[i]
-                                      .secondarytext,
-                                  image: data.userMessages[i].image,
-                                  time: data.userMessages[i].time);
-                            }
-                        ):Center(
-                          child: Container(
-                            height: 20.0,
-                            width: 20.0,
-                            child: CircularProgressIndicator(
-                                valueColor: AlwaysStoppedAnimation<Color>(Colors.teal)
-                            ),
-                          ),
-                        );
-                      }
-                      );
+                    builder: (context, data, child) {
+                      return data.userMessages.length != 0
+                          ? ListView.builder(
+                              itemCount: data.userMessages.length,
+                              itemBuilder: (context, i) {
+                                return data.userMessages.isEmpty
+                                    ? Text('You have no chats available.')
+                                    : ChatUsersList(
+                                        msgDocId: data.userMessages[i].docId,
+                                        text: data.userMessages[i].text,
+                                        secondarytext:
+                                            data.userMessages[i].secondarytext,
+                                        image: data.userMessages[i].image,
+                                        time: data.userMessages[i].time);
+                              },
+                            )
+                          : Center(
+                              child: CircularProgressIndicator(
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                      Colors.teal)),
+                            );
+                    },
+                  );
                 },
               ),
             )
