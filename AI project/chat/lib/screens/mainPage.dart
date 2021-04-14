@@ -14,28 +14,37 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text(
+          'Chattar Pattar',
+          style: TextStyle(
+            color: Colors.black,
+          ),
+        ),
+        centerTitle: true,
+        elevation: 0,
+        backgroundColor: Colors.white,
+        iconTheme: IconThemeData(color: Colors.black),
+      ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: index,
         onTap: (value) {
-          if (value == 0) {
-            print('home');
-            setState(() {
+          setState(() {
+            if (value == 0) {
+              print('home');
               index = value;
               pageSelector = HomeScreen();
-            });
-          } else if (value == 1) {
-            print('Request');
-            setState(() {
+            } else if (value == 1) {
+              print('Request');
               index = value;
               pageSelector = FriendRequest();
-            });
-          } else {
-            print('profile');
-            setState(() {
+            } else {
+              print('profile');
               index = value;
               pageSelector = Profile();
-            });
-          }
+            }
+          });
         },
         selectedItemColor: Colors.teal,
         unselectedItemColor: Colors.grey.shade600,

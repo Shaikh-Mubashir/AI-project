@@ -19,6 +19,7 @@ class ChatModel extends ChangeNotifier {
 
   clearList() {
     userMessages.clear();
+    print('clear list called $userMessages}');
   }
 
   Future<void> getFriendsData(String userDocId, String msgDocId) async {

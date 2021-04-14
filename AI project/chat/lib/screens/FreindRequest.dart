@@ -26,55 +26,39 @@ class _FriendRequestState extends State<FriendRequest> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: Text(
-          'Friend Requests',
-          style: TextStyle(
-            color: Colors.black,
-          ),
-        ),
-        centerTitle: true,
-        elevation: 0,
-        backgroundColor: Colors.white,
-        iconTheme: IconThemeData(color: Colors.black),
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-            child: StreamBuilder(
-          stream: _firestore
-              .collection('user')
-              .doc(
-                  Provider.of<UserDetails>(context, listen: false).getUserDocID)
-              .collection('requests')
-              .snapshots(),
-          builder: (context, snapshot) {
-            if (snapshot.hasError) {
-              return Center(
-                child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.teal)),
-              );
-            }
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(
-                child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.teal)),
-              );
-            }
-            List<RequestTile> requestAccept = [];
-            final data = snapshot.data.docs;
-            String uid;
-            for (var usid in data) {
-              uid = usid.data()['userDocId'];
-              requestAccept.add(RequestTile(uid: uid, reqUid: usid.id));
-            }
-            return Column(
-              children: requestAccept,
+    return SafeArea(
+      child: SingleChildScrollView(
+          child: StreamBuilder(
+        stream: _firestore
+            .collection('user')
+            .doc(Provider.of<UserDetails>(context, listen: false).getUserDocID)
+            .collection('requests')
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Center(
+              child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.teal)),
             );
-          },
-        )),
-      ),
+          }
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.teal)),
+            );
+          }
+          List<RequestTile> requestAccept = [];
+          final data = snapshot.data.docs;
+          String uid;
+          for (var usid in data) {
+            uid = usid.data()['userDocId'];
+            requestAccept.add(RequestTile(uid: uid, reqUid: usid.id));
+          }
+          return Column(
+            children: requestAccept,
+          );
+        },
+      )),
     );
   }
 }
