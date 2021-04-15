@@ -24,7 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> getFriends() async {
     print('timer called');
     Timer(
-      Duration(seconds: 4),
+      Duration(seconds: 2),
       () async {
         final frndsData = await _firestore
             .collection('user')

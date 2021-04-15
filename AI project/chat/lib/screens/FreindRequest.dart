@@ -1,6 +1,6 @@
 import 'package:chat/components/alertBoxes.dart';
 import 'package:chat/controller/requestsController.dart';
-import 'file:///D:/ilhan%20flutter/AI-project/AI%20project/chat/lib/screens/home.dart';
+import 'package:chat/screens/home.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -49,10 +49,10 @@ class _FriendRequestState extends State<FriendRequest> {
           }
           List<RequestTile> requestAccept = [];
           final data = snapshot.data.docs;
-          String uid;
+          String uid,name;
           for (var usid in data) {
             uid = usid.data()['userDocId'];
-            requestAccept.add(RequestTile(uid: uid, reqUid: usid.id));
+            requestAccept.add(RequestTile(uid: uid, reqUid: usid.id,superContext: context,));
           }
           return Column(
             children: requestAccept,
@@ -65,12 +65,14 @@ class _FriendRequestState extends State<FriendRequest> {
 
 class RequestTile extends StatefulWidget {
   String uid, reqUid;
-  RequestTile({this.uid, this.reqUid});
+  BuildContext superContext;
+  RequestTile({this.uid, this.reqUid,this.superContext});
   @override
   _RequestTileState createState() => _RequestTileState();
 }
 
 class _RequestTileState extends State<RequestTile> {
+
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
   bool loaded = false;
   String name, imgUrl;
@@ -146,7 +148,7 @@ class _RequestTileState extends State<RequestTile> {
                   context, userDocId, widget.uid, widget.reqUid);
               if (check) {
                 print(check);
-                Navigator.of(context).pop();
+                  Navigator.pop(widget.superContext);
               }
             },
           )

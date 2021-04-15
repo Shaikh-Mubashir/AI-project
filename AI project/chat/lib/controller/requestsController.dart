@@ -9,7 +9,7 @@ class Requests {
       context, String userDocId, String frndUid, String reqUid) async {
     await _firestore
         .collection('user')
-        .doc(Provider.of<UserDetails>(context, listen: false).getUserDocID)
+        .doc(userDocId)
         .collection('requests')
         .doc(reqUid)
         .delete();
@@ -22,14 +22,18 @@ class Requests {
         .doc(userDocId)
         .collection('friends')
         .doc()
-        .set({'userDocId': frndUid, 'messageDocId': msgDocId.id});
+        .set(
+      {'userDocId': frndUid, 'messageDocId': msgDocId.id},
+    );
     print('second Done');
     await _firestore
         .collection('user')
         .doc(frndUid)
         .collection('friends')
         .doc()
-        .set({'userDocId': userDocId, 'messageDocId': msgDocId.id});
+        .set(
+      {'userDocId': userDocId, 'messageDocId': msgDocId.id},
+    );
     return true;
   }
 }

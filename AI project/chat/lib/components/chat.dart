@@ -1,4 +1,4 @@
-import 'file:///D:/ilhan%20flutter/AI-project/AI%20project/chat/lib/screens/chatDetailPage.dart';
+import 'package:chat/screens/chatDetailPage.dart';
 import 'package:flutter/material.dart';
 
 class ChatUsersList extends StatefulWidget {
@@ -14,6 +14,7 @@ class ChatUsersList extends StatefulWidget {
       @required this.image,
       @required this.time,
       this.msgDocId});
+
   @override
   _ChatUsersListState createState() => _ChatUsersListState();
 }
@@ -21,60 +22,39 @@ class ChatUsersList extends StatefulWidget {
 class _ChatUsersListState extends State<ChatUsersList> {
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return ListTile(
+      hoverColor: Colors.black26,
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return ChatDetailPage(
-            receiverName: widget.text,
-            msgDocId: widget.msgDocId,
-          );
-        }));
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return ChatDetailPage(
+                receiverName: widget.text,
+                msgDocId: widget.msgDocId,
+              );
+            },
+          ),
+        );
       },
-      child: Container(
-        padding: EdgeInsets.all(10),
-        child: Row(
-          children: [
-            Expanded(
-              child: Row(
-                children: [
-                  CircleAvatar(
-                    backgroundImage: AssetImage(widget.image),
-                    maxRadius: 30,
-                  ),
-                  SizedBox(
-                    width: 15,
-                  ),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          widget.text,
-                          style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.w400),
-                        ),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        Text(
-                          widget.secondarytext,
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey.shade500,
-                          ),
-                        )
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            ),
-            Text(
-              widget.time,
-              style: TextStyle(fontSize: 14, color: Colors.grey.shade500),
-            ),
-          ],
+      leading: CircleAvatar(
+        backgroundImage: AssetImage(widget.image),
+        maxRadius: 30,
+      ),
+      title: Text(
+        widget.text,
+        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
+      ),
+      subtitle: Text(
+        widget.secondarytext,
+        style: TextStyle(
+          fontSize: 14,
+          color: Colors.grey.shade500,
         ),
+      ),
+      trailing: Text(
+        widget.time,
+        style: TextStyle(fontSize: 14, color: Colors.grey.shade500),
       ),
     );
   }

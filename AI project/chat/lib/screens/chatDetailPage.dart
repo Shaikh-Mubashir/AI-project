@@ -6,6 +6,7 @@ import 'package:chat/models/userDetail.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:chat/controller/chatBotController.dart';
 
 enum MessageType {
   Sender,
@@ -24,6 +25,8 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
   List<ChatMessage> chatMessage = [];
   TextEditingController _message = TextEditingController();
+  ChatBot bot=ChatBot();
+
 
   @override
   Widget build(BuildContext context) {
@@ -153,7 +156,9 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                   ),
                 ),
                 GestureDetector(
-                  onTap: () {
+                  onTap: ()async {
+                  await  bot.initChatBot();
+                    await bot.getAnswerByChatBot(_message.text);
                     _msgController = MessageController();
                     try {
                       if (_message.text.isNotEmpty) {

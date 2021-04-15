@@ -1,6 +1,7 @@
-import 'file:///D:/ilhan%20flutter/AI-project/AI%20project/chat/lib/screens/FreindRequest.dart';
-import 'file:///D:/ilhan%20flutter/AI-project/AI%20project/chat/lib/screens/home.dart';
-import 'file:///D:/ilhan%20flutter/AI-project/AI%20project/chat/lib/screens/profile.dart';
+
+import 'package:chat/screens/FreindRequest.dart';
+import 'package:chat/screens/home.dart';
+import 'package:chat/screens/profile.dart';
 import 'package:flutter/material.dart';
 
 class MainPage extends StatefulWidget {

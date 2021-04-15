@@ -1,5 +1,6 @@
-import 'file:///D:/ilhan%20flutter/AI-project/AI%20project/chat/lib/screens/mainPage.dart';
-import 'file:///D:/ilhan%20flutter/AI-project/AI%20project/chat/lib/screens/signUp.dart';
+
+import 'package:chat/screens/mainPage.dart';
+import 'package:chat/screens/signUp.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_progress_hud/flutter_progress_hud.dart';
 import '../controller/createUser.dart';

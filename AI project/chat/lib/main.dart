@@ -1,6 +1,6 @@
-import 'file:///D:/ilhan%20flutter/AI-project/AI%20project/chat/lib/screens/login.dart';
 import 'package:chat/models/chatsModel.dart';
 import 'package:chat/models/userDetail.dart';
+import 'package:chat/screens/login.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

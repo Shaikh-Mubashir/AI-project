@@ -1,4 +1,3 @@
-import 'file:///D:/ilhan%20flutter/AI-project/AI%20project/chat/lib/screens/chatDetailPage.dart';
 import 'package:chat/models/chat_Messages.dart';
 import 'package:flutter/material.dart';
 

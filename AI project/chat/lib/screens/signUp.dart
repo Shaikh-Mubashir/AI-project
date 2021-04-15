@@ -1,6 +1,6 @@
 import 'package:chat/controller/createUser.dart';
-import 'file:///D:/ilhan%20flutter/AI-project/AI%20project/chat/lib/screens/login.dart';
 import 'package:chat/models/userDetail.dart';
+import 'package:chat/screens/login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
