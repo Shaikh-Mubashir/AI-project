@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_progress_hud/flutter_progress_hud.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 class SignUp extends StatefulWidget {
   @override
@@ -13,6 +15,7 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
+ bool imagePicked = false;
   TextEditingController _username = TextEditingController();
   TextEditingController _email = TextEditingController();
   TextEditingController _password = TextEditingController();
@@ -20,6 +23,21 @@ class _SignUpState extends State<SignUp> {
   CreateUser _createUser;
   AlertState _alertBoxes;
   GlobalKey<FormState> _key = GlobalKey<FormState>();
+
+  File _image;
+  final picker = ImagePicker();
+
+  Future getImage() async {
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,9 +63,15 @@ class _SignUpState extends State<SignUp> {
                         SizedBox(
                           height: 20,
                         ),
-                        CircleAvatar(
-                          backgroundImage: AssetImage('images/profile.jpg'),
-                          radius: 65,
+                        GestureDetector(
+                          onTap: (){
+                            getImage();
+                          },
+                          child: CircleAvatar(
+                            backgroundImage: imagePicked
+                            ? FileImage(_image): AssetImage('images/profile.jpg'),
+                            radius: 65,
+                          ),
                         ),
                         SizedBox(
                           height: 20,

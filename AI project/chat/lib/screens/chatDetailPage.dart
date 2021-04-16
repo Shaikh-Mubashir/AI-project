@@ -7,6 +7,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:chat/controller/chatBotController.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 enum MessageType {
   Sender,
@@ -26,6 +28,49 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   List<ChatMessage> chatMessage = [];
   TextEditingController _message = TextEditingController();
   ChatBot bot=ChatBot();
+  File _cimage;
+  final imagepicker = ImagePicker();
+
+  Future getCamera() async {
+    final pickedFile = await imagepicker.getImage(source: ImageSource.camera);
+
+    setState(() {
+      if (pickedFile != null) {
+        _cimage = File(pickedFile.path);
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+
+  File _image;
+  final picker = ImagePicker();
+
+  Future getImage() async {
+    final pickedFile = await imagepicker.getImage(source: ImageSource.gallery);
+
+    setState(() {
+      if (pickedFile != null) {
+        _cimage = File(pickedFile.path);
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+  File _video;
+  final videopicker = ImagePicker();
+
+  Future getvideo() async {
+    final pickedFile = await videopicker.getVideo(source: ImageSource.gallery);
+
+    setState(() {
+      if (pickedFile != null) {
+        _video = File(pickedFile.path);
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
 
 
   @override
@@ -203,31 +248,48 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            CircleAvatar(
-              backgroundColor: Colors.deepPurple,
-              radius: 30.0,
-              child: Icon(
-                Icons.camera_alt,
-                color: Colors.white,
-                size: 28,
+            GestureDetector(
+              onTap: (){
+                getCamera();
+              },
+              child: CircleAvatar(
+
+                backgroundColor: Colors.deepPurple,
+                radius: 30.0,
+                child: Icon(
+                  Icons.camera_alt,
+                  color: Colors.white,
+                  size: 28,
+                ),
               ),
             ),
-            CircleAvatar(
-              backgroundColor: Colors.orangeAccent,
-              radius: 30.0,
-              child: Icon(
-                Icons.image,
-                color: Colors.white,
-                size: 28,
+            GestureDetector(
+              onTap: (){
+                getImage();
+              },
+              child: CircleAvatar(
+                backgroundColor: Colors.orangeAccent,
+                radius: 30.0,
+                child: Icon(
+                  Icons.image,
+                  color: Colors.white,
+                  size: 28,
+                ),
               ),
             ),
-            CircleAvatar(
-              backgroundColor: Colors.teal,
-              radius: 30.0,
-              child: Icon(
-                Icons.video_call,
-                color: Colors.white,
-                size: 28,
+
+            GestureDetector(
+              onTap: (){
+                getvideo();
+              },
+              child: CircleAvatar(
+                backgroundColor: Colors.teal,
+                radius: 30.0,
+                child: Icon(
+                  Icons.video_call,
+                  color: Colors.white,
+                  size: 28,
+                ),
               ),
             ),
           ],

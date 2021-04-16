@@ -1,9 +1,11 @@
 import 'dart:async';
 
 import 'package:chat/components/chat.dart';
+import 'package:chat/controller/createUser.dart';
 import 'package:chat/models/chatsModel.dart';
 import 'package:chat/models/userDetail.dart';
 import 'package:chat/screens/addFriend.dart';
+import 'package:chat/screens/login.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -70,121 +72,154 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Future<bool> onWillPopGoToLogIn() {
+      CreateUser _user=CreateUser();
+      return showDialog(
+        context: context,
+        builder: (context) => new AlertDialog(
+          title: new Text('Confirm Exit?',
+              style: new TextStyle(color: Colors.black, fontSize: 20.0)),
+          content: new Text(
+              'Do you wish to Logout ?'),
+          actions: <Widget>[
+            new FlatButton(
+              onPressed: () async{
+                bool check = await _user.logOut();
+                if(check){
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>Login()));
+                }
+              },
+              child:
+              new Text('Yes', style: new TextStyle(fontSize: 18.0)),
+            ),
+            new FlatButton(
+              onPressed: () => Navigator.pop(context), // this line dismisses the dialog
+              child: new Text('No', style: new TextStyle(fontSize: 18.0)),
+            )
+          ],
+        ),
+      ) ??
+          false;
+    }
     double height = MediaQuery.of(context).size.height;
-    return SafeArea(
-      child: Stack(
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Padding(
-              //   padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 15.0),
-              //   child: Row(
-              //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //     children: [
-              //       Text(
-              //         'Chats',
-              //         style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-              //       ),
-              //       GestureDetector(
-              //         onTap: () {
-              //           Navigator.push(
-              //               context,
-              //               MaterialPageRoute(
-              //                   builder: (context) => AddFriends()));
-              //         },
-              //         child: Container(
-              //           padding: const EdgeInsets.only(
-              //               left: 8, right: 8, top: 2, bottom: 2),
-              //           height: 30,
-              //           decoration: BoxDecoration(
-              //               borderRadius: BorderRadius.circular(30),
-              //               color: Colors.pink[50]),
-              //           child: Row(
-              //             children: [
-              //               Icon(
-              //                 Icons.add,
-              //                 color: Colors.pink,
-              //                 size: 30,
-              //               ),
-              //               SizedBox(
-              //                 width: 2,
-              //               ),
-              //               Text(
-              //                 'New',
-              //                 style: TextStyle(
-              //                     fontWeight: FontWeight.bold, fontSize: 19),
-              //               )
-              //             ],
-              //           ),
-              //         ),
-              //       )
-              //     ],
-              //   ),
-              // ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 12.0),
-                child: TextFormField(
-                  decoration: InputDecoration(
-                      hintText: 'Search....',
-                      focusedBorder: InputBorder.none,
-                      hintStyle: TextStyle(
-                        color: Colors.grey.shade400,
-                      ),
-                      prefixIcon: Icon(
-                        Icons.search,
-                        color: Colors.grey.shade400,
-                      ),
-                      filled: true,
-                      fillColor: Colors.grey.shade100,
-                      contentPadding: EdgeInsets.all(8),
-                      enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30),
-                          borderSide: BorderSide(color: Colors.grey.shade100))),
+    return Scaffold(
+      body: WillPopScope(
+        onWillPop: onWillPopGoToLogIn,
+        child: Stack(
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Padding(
+                //   padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 15.0),
+                //   child: Row(
+                //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //     children: [
+                //       Text(
+                //         'Chats',
+                //         style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                //       ),
+                //       GestureDetector(
+                //         onTap: () {
+                //           Navigator.push(
+                //               context,
+                //               MaterialPageRoute(
+                //                   builder: (context) => AddFriends()));
+                //         },
+                //         child: Container(
+                //           padding: const EdgeInsets.only(
+                //               left: 8, right: 8, top: 2, bottom: 2),
+                //           height: 30,
+                //           decoration: BoxDecoration(
+                //               borderRadius: BorderRadius.circular(30),
+                //               color: Colors.pink[50]),
+                //           child: Row(
+                //             children: [
+                //               Icon(
+                //                 Icons.add,
+                //                 color: Colors.pink,
+                //                 size: 30,
+                //               ),
+                //               SizedBox(
+                //                 width: 2,
+                //               ),
+                //               Text(
+                //                 'New',
+                //                 style: TextStyle(
+                //                     fontWeight: FontWeight.bold, fontSize: 19),
+                //               )
+                //             ],
+                //           ),
+                //         ),
+                //       )
+                //     ],
+                //   ),
+                // ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 12.0),
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                        hintText: 'Search....',
+                        focusedBorder: InputBorder.none,
+                        hintStyle: TextStyle(
+                          color: Colors.grey.shade400,
+                        ),
+                        prefixIcon: Icon(
+                          Icons.search,
+                          color: Colors.grey.shade400,
+                        ),
+                        filled: true,
+                        fillColor: Colors.grey.shade100,
+                        contentPadding: EdgeInsets.all(8),
+                        enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30),
+                            borderSide: BorderSide(color: Colors.grey.shade100))),
+                  ),
                 ),
-              ),
-              showLoader
-                  ? Center(
-                      child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.teal),
-                      ),
-                    )
-                  : Container(
-                      height: height * 0.7,
-                      child: Consumer<ChatModel>(
-                        builder: (context, data, child) {
-                          return data.userMessages.isNotEmpty
-                              ? ListView.builder(
-                                  itemCount: data.userMessages.length,
-                                  itemBuilder: (context, i) {
-                                    return ChatUsersList(
-                                      text: data.userMessages[i].text,
-                                      secondarytext:
-                                          data.userMessages[i].secondarytext,
-                                      image: data.userMessages[i].image,
-                                      time: data.userMessages[i].time,
-                                      msgDocId: data.userMessages[i].docId,
-                                    );
-                                  })
-                              : Center(child: Text('No chats available'));
-                        },
-                      ),
-                    )
-            ],
-          ),
-          Align(
-            alignment: Alignment.bottomRight,
-            child: FloatingActionButton(
-                tooltip: 'Add a new Friend',
-                backgroundColor: Colors.teal,
-                child: Icon(Icons.add),
-                onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => AddFriends()));
-                }),
-          )
-        ],
+                showLoader
+                    ? Center(
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.teal),
+                  ),
+                )
+                    : Container(
+                  height: height * 0.7,
+                  child: Consumer<ChatModel>(
+                    builder: (context, data, child) {
+                      return data.userMessages.isNotEmpty
+                          ? ListView.builder(
+                          itemCount: data.userMessages.length,
+                          itemBuilder: (context, i) {
+                            return ChatUsersList(
+                              text: data.userMessages[i].text,
+                              secondarytext:
+                              data.userMessages[i].secondarytext,
+                              image: data.userMessages[i].image,
+                              time: data.userMessages[i].time,
+                              msgDocId: data.userMessages[i].docId,
+                            );
+                          })
+                          : Center(child: Text('No chats available'));
+                    },
+                  ),
+                )
+              ],
+            ),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: FloatingActionButton(
+                  tooltip: 'Add a new Friend',
+                  backgroundColor: Colors.teal,
+                  child: Icon(Icons.add),
+                  onPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => AddFriends()));
+                  }),
+            )
+          ],
+        ),
       ),
+
     );
   }
 }
