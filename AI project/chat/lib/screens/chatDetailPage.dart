@@ -16,8 +16,8 @@ enum MessageType {
 }
 
 class ChatDetailPage extends StatefulWidget {
-  String receiverName, msgDocId;
-  ChatDetailPage({this.receiverName, this.msgDocId});
+  String receiverName, msgDocId, image;
+  ChatDetailPage({this.receiverName, this.msgDocId, this.image});
   @override
   _ChatDetailPageState createState() => _ChatDetailPageState();
 }
@@ -74,11 +74,44 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    widget.receiverName = '';
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    //didChangeAppLifecycleState(state);
+
+    if (state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.detached) {
+      print(
+          '//////////////////////APPLICATION ENDED/////////////////////////////////');
+      return;
+    }
+
+    final isBackground = state == AppLifecycleState.paused;
+
+    if (isBackground) {
+      // _msg.updateOnlineStatus(context, 'offline');
+
+    }
+
+    /* if (isBackground) {
+      // service.stop();
+    } else {
+      // service.start();
+    }*/
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: ChatDetailPageAppBar(
         receiverName: widget.receiverName,
+        image: widget.image,
       ),
       body: Column(
         children: [

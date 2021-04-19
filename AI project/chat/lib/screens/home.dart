@@ -186,6 +186,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           friends.add(ChatUsersList(
                             name: data.data()['name'],
                             msgDocId: data.data()['messageDocId'],
+                            userDocId: data.data()['userDocId'],
                           ));
                         }
                         return friends.isNotEmpty

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 class ChatDetailPageAppBar extends StatelessWidget
     implements PreferredSizeWidget {
-  String receiverName;
-  ChatDetailPageAppBar({this.receiverName});
+  String receiverName, image;
+  ChatDetailPageAppBar({this.receiverName, this.image});
   @override
   Widget build(BuildContext context) {
     return AppBar(
@@ -27,7 +27,7 @@ class ChatDetailPageAppBar extends StatelessWidget
               ),
               CircleAvatar(
                 maxRadius: 20,
-                backgroundImage: AssetImage('images/userImage4.jpg'),
+                backgroundImage: NetworkImage(image),
               ),
               SizedBox(
                 width: 12,

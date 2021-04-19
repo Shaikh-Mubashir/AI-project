@@ -3,10 +3,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class ChatUsersList extends StatefulWidget {
-  String msgDocId;
+  String msgDocId, userDocId;
   String name;
 
-  ChatUsersList({@required this.name, this.msgDocId});
+  ChatUsersList({@required this.name, this.msgDocId, this.userDocId});
 
   @override
   _ChatUsersListState createState() => _ChatUsersListState();
@@ -15,8 +15,15 @@ class ChatUsersList extends StatefulWidget {
 class _ChatUsersListState extends State<ChatUsersList> {
   String last, time, image;
   DateTime timeParsed;
-  bool msgsExist = false;
+  bool msgsExist = false, imageExist = false;
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  getUserImage() async {
+    final imagePicker =
+        await _firestore.collection('user').doc(widget.userDocId).get();
+    image = imagePicker.data()['image'];
+  }
+
   getLastMessage() async {
     final msgData = await _firestore
         .collection('messages')
@@ -56,6 +63,7 @@ class _ChatUsersListState extends State<ChatUsersList> {
     setState(() {
       msgsExist = true;
       timeParsed = DateTime.parse(time);
+      imageExist = true;
     });
   }
 
@@ -73,6 +81,7 @@ class _ChatUsersListState extends State<ChatUsersList> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    getUserImage();
     getLastMessage();
   }
 
@@ -88,13 +97,16 @@ class _ChatUsersListState extends State<ChatUsersList> {
               return ChatDetailPage(
                 receiverName: widget.name,
                 msgDocId: widget.msgDocId,
+                image: image,
               );
             },
           ),
         );
       },
       leading: CircleAvatar(
-        backgroundImage: AssetImage('images/userImage8.jpg'),
+        backgroundColor: Colors.black,
+        backgroundImage:
+            imageExist ? NetworkImage(image) : AssetImage('images/profile.jpg'),
         maxRadius: 30,
       ),
       title: Text(
