@@ -1,4 +1,4 @@
-
+import 'package:chat/components/alertBoxes.dart';
 import 'package:chat/screens/mainPage.dart';
 import 'package:chat/screens/signUp.dart';
 import 'package:flutter/material.dart';
@@ -92,22 +92,34 @@ class _LoginState extends State<Login> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20)),
                       onPressed: () async {
+                        AlertBoxes _alert = AlertBoxes();
                         final progress = ProgressHUD.of(context);
                         if (_key.currentState.validate()) {
+                          // try {
                           _createUser = CreateUser();
-                          progress.showWithText('Loading...');
+                          //progress.showWithText('Loading...');
+                          _alert.loadingAlertBox(context);
                           bool check = await _createUser.logInUser(
                               context, _username.text, _password.text);
-                          if (check == true) {
+                          print('At log in screen =>?$check');
+                          if (check) {
                             progress.dismiss();
+                            Navigator.pop(context);
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => MainPage()));
                           } else {
+                            Navigator.pop(context);
+                            _alert.simpleAlertBox(context, 'Failed to Log in.',
+                                'Wrong user email or password.');
                             print('nhi chl rha');
                             progress.dismiss();
                           }
+                          // } catch (e) {
+                          // _alert.simpleAlertBox(context, 'Failed to Log in.',
+                          //     'Something went wrong.');
+                          // }
                         }
                       },
                     ),

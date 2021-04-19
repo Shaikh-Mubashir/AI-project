@@ -1,3 +1,4 @@
+import 'package:chat/components/mediaPicker.dart';
 import 'package:chat/controller/createUser.dart';
 import 'package:chat/models/userDetail.dart';
 import 'package:chat/screens/login.dart';
@@ -15,7 +16,7 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
- bool imagePicked = false;
+  bool imagePicked = false;
   TextEditingController _username = TextEditingController();
   TextEditingController _email = TextEditingController();
   TextEditingController _password = TextEditingController();
@@ -27,17 +28,18 @@ class _SignUpState extends State<SignUp> {
   File _image;
   final picker = ImagePicker();
 
-  Future getImage() async {
-    final pickedFile = await picker.getImage(source: ImageSource.gallery);
-
-    setState(() {
-      if (pickedFile != null) {
-        _image = File(pickedFile.path);
-      } else {
-        print('No image selected.');
-      }
-    });
-  }
+  //  getImage() async {
+  //   final pickedFile = await picker.getImage(source: ImageSource.gallery);
+  //
+  //   setState(() {
+  //     if (pickedFile != null) {
+  //       imagePicked = true;
+  //       _image = File(pickedFile.path);
+  //     } else {
+  //       print('No image selected.');
+  //     }
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -64,12 +66,23 @@ class _SignUpState extends State<SignUp> {
                           height: 20,
                         ),
                         GestureDetector(
-                          onTap: (){
-                            getImage();
+                          onTap: () async {
+                            //getImage();
+                            MediaPicker pick = MediaPicker();
+                            final pickedImage = await pick.getImage();
+                            setState(() {
+                              if (pickedImage != null) {
+                                imagePicked = true;
+                                _image = pickedImage;
+                              } else {
+                                print('No image selected.');
+                              }
+                            });
                           },
                           child: CircleAvatar(
                             backgroundImage: imagePicked
-                            ? FileImage(_image): AssetImage('images/profile.jpg'),
+                                ? FileImage(_image)
+                                : AssetImage('images/profile.jpg'),
                             radius: 65,
                           ),
                         ),
@@ -144,6 +157,7 @@ class _SignUpState extends State<SignUp> {
                             style: TextStyle(fontSize: 18),
                           ),
                           color: Colors.teal,
+                          textColor: Colors.white,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20)),
                           onPressed: () async {
@@ -157,7 +171,8 @@ class _SignUpState extends State<SignUp> {
                                 bool check = await _createUser.registerUser(
                                     _username.text,
                                     _email.text,
-                                    _password.text);
+                                    _password.text,
+                                    _image);
                                 if (check == true) {
                                   print('aaa');
                                   progress.dismiss();

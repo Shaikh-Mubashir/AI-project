@@ -1,8 +1,9 @@
-
+import 'package:chat/controller/messageController.dart';
 import 'package:chat/screens/FreindRequest.dart';
 import 'package:chat/screens/home.dart';
 import 'package:chat/screens/profile.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -12,6 +13,35 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   int index = 0;
   Widget pageSelector = HomeScreen();
+  MessageController _msg = MessageController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _msg.updateOnlineStatus(context, 'online');
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    didChangeAppLifecycleState(state);
+
+    if (state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.detached) return;
+
+    final isBackground = state == AppLifecycleState.paused;
+
+    if (isBackground) {
+      _msg.updateOnlineStatus(context, 'offline');
+    }
+
+    /* if (isBackground) {
+      // service.stop();
+    } else {
+      // service.start();
+    }*/
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

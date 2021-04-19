@@ -57,7 +57,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - images/
-    - assets/expanded-idiom-310815-5cfd1fb308a1.json
+    - assets/chat-c1f2d-419218f796d9.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

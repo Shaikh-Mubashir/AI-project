@@ -49,14 +49,32 @@ class _FriendRequestState extends State<FriendRequest> {
           }
           List<RequestTile> requestAccept = [];
           final data = snapshot.data.docs;
-          String uid,name;
+          String uid, name;
           for (var usid in data) {
             uid = usid.data()['userDocId'];
-            requestAccept.add(RequestTile(uid: uid, reqUid: usid.id,superContext: context,));
+            requestAccept.add(RequestTile(
+              uid: uid,
+              reqUid: usid.id,
+              superContext: context,
+            ));
           }
-          return Column(
-            children: requestAccept,
-          );
+          return requestAccept.isNotEmpty
+              ? Column(
+                  children: requestAccept,
+                )
+              : Container(
+                  height: MediaQuery.of(context).size.height * 0.8,
+                  width: MediaQuery.of(context).size.width,
+                  child: Center(
+                    child: Text(
+                      'No Pending Requests.',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 30,
+                          color: Colors.teal[200]),
+                    ),
+                  ),
+                );
         },
       )),
     );
@@ -66,13 +84,12 @@ class _FriendRequestState extends State<FriendRequest> {
 class RequestTile extends StatefulWidget {
   String uid, reqUid;
   BuildContext superContext;
-  RequestTile({this.uid, this.reqUid,this.superContext});
+  RequestTile({this.uid, this.reqUid, this.superContext});
   @override
   _RequestTileState createState() => _RequestTileState();
 }
 
 class _RequestTileState extends State<RequestTile> {
-
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
   bool loaded = false;
   String name, imgUrl;
@@ -145,10 +162,14 @@ class _RequestTileState extends State<RequestTile> {
               _alert.loadingAlertBox(context);
               Requests _req = Requests();
               bool check = await _req.acceptRequest(
-                  context, userDocId, widget.uid, widget.reqUid);
+                  context,
+                  userDocId,
+                  widget.uid,
+                  widget.reqUid,
+                  Provider.of<UserDetails>(context, listen: false).getUserName);
               if (check) {
                 print(check);
-                  Navigator.pop(widget.superContext);
+                Navigator.pop(widget.superContext);
               }
             },
           )

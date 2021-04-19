@@ -1,28 +1,33 @@
 import 'package:flutter_dialogflow/dialogflow_v2.dart';
 
-class ChatBot{
-
+class ChatBot {
   AuthGoogle authGoogle;
-  List message=[];
-  Future<void> initChatBot()async{
-     authGoogle= await  AuthGoogle(
-      fileJson: 'assets/expanded-idiom-310815-5cfd1fb308a1.json'
-    ).build();
+  List message = [];
+  Future<void> initChatBot() async {
+    authGoogle =
+        await AuthGoogle(fileJson: 'assets/chat-c1f2d-419218f796d9.json')
+            .build();
   }
 
-
-  Future<void> getAnswerByChatBot(String query)async{
-print(query);
-AuthGoogle authGoogle= await  AuthGoogle(
-    fileJson: 'assets/expanded-idiom-310815-5cfd1fb308a1.json'
-).build();
-    Dialogflow dialogflow= Dialogflow(authGoogle: authGoogle,language:Language.english);
-   AIResponse aiResponse= await dialogflow.detectIntent('Will you marry me?');
-    //AIResponse aiResponse= await dialogflow.
-    message.insert(0, {
-      "data":0,
-      "message":aiResponse.getListMessage()[0]["text"]["text"].toString()
-    });
-    print(message);
+  Future<String> getAnswerByChatBot(String query) async {
+    try {
+      print(query);
+      AuthGoogle authGoogle =
+          await AuthGoogle(fileJson: 'assets/chat-c1f2d-419218f796d9.json')
+              .build();
+      Dialogflow dialogflow =
+          Dialogflow(authGoogle: authGoogle, language: Language.english);
+      AIResponse aiResponse = await dialogflow.detectIntent(query);
+      //AIResponse aiResponse= await dialogflow.
+      // message.insert(0, {
+      //   "data": 0,
+      //   "message": aiResponse.getListMessage()[0]["text"]["text"].toString()
+      // });
+      print(aiResponse.getMessage());
+      return aiResponse.getMessage();
+    } catch (e) {
+      print(e);
+      return null;
+    }
   }
 }

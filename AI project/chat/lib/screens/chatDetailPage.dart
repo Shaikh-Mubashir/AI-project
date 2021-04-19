@@ -27,7 +27,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
   List<ChatMessage> chatMessage = [];
   TextEditingController _message = TextEditingController();
-  ChatBot bot=ChatBot();
+
   File _cimage;
   final imagepicker = ImagePicker();
 
@@ -57,6 +57,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
       }
     });
   }
+
   File _video;
   final videopicker = ImagePicker();
 
@@ -71,7 +72,6 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
       }
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -103,14 +103,6 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                     }
 
                     if (!snapshot.hasData) {
-                      return Center(
-                        child: CircularProgressIndicator(
-                            valueColor:
-                                AlwaysStoppedAnimation<Color>(Colors.teal)),
-                      );
-                    }
-
-                    if (snapshot.connectionState == ConnectionState.waiting) {
                       return Center(
                         child: CircularProgressIndicator(
                             valueColor:
@@ -201,9 +193,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                   ),
                 ),
                 GestureDetector(
-                  onTap: ()async {
-                  await  bot.initChatBot();
-                    await bot.getAnswerByChatBot(_message.text);
+                  onTap: () async {
                     _msgController = MessageController();
                     try {
                       if (_message.text.isNotEmpty) {
@@ -214,6 +204,15 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                             _message.text,
                             'Text',
                             widget.msgDocId);
+                        _msgController.sendAnswerByBot(
+                            myName:
+                                Provider.of<UserDetails>(context, listen: false)
+                                    .getUserName,
+                            senderName: widget.receiverName,
+                            message: _message.text,
+                            type: 'Text',
+                            msgDocId: widget.msgDocId);
+
                         _message.clear();
                       }
                     } catch (e) {
@@ -249,11 +248,10 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             GestureDetector(
-              onTap: (){
+              onTap: () {
                 getCamera();
               },
               child: CircleAvatar(
-
                 backgroundColor: Colors.deepPurple,
                 radius: 30.0,
                 child: Icon(
@@ -264,7 +262,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
               ),
             ),
             GestureDetector(
-              onTap: (){
+              onTap: () {
                 getImage();
               },
               child: CircleAvatar(
@@ -277,9 +275,8 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                 ),
               ),
             ),
-
             GestureDetector(
-              onTap: (){
+              onTap: () {
                 getvideo();
               },
               child: CircleAvatar(
