@@ -216,6 +216,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                   SizedBox(
                     width: 10,
                   ),
+<<<<<<< Updated upstream
                   Expanded(
                     child: TextFormField(
                       controller: _message,
@@ -226,6 +227,36 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                             color: Colors.teal,
                           ),
                           border: InputBorder.none),
+=======
+                ),
+                GestureDetector(
+                  onTap: ()async {
+                  await  bot.initChatBot();
+                    await bot.getAnswerByChatBot(_message.text);
+                    _msgController = MessageController();
+                    try {
+                      if (_message.text.isNotEmpty) {
+                        _msgController.sendTextMessage(
+                            widget.receiverName,
+                            Provider.of<UserDetails>(context, listen: false)
+                                .getUserName,
+                            _message.text,
+                            'Text',
+                            widget.msgDocId);
+                        _message.clear();
+                      }
+
+                    } catch (e) {
+                      print(e);
+                    }
+                  },
+                  child: CircleAvatar(
+                    backgroundColor: Colors.teal,
+                    radius: 25.0,
+                    child: Icon(
+                      Icons.send_sharp,
+                      color: Colors.white,
+>>>>>>> Stashed changes
                     ),
                   ),
                   GestureDetector(
