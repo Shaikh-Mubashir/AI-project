@@ -1,3 +1,4 @@
+import 'package:chat/components/videoPlayer.dart';
 import 'package:chat/models/chat_Messages.dart';
 import 'package:flutter/material.dart';
 
@@ -32,9 +33,27 @@ class _ChatBubbleState extends State<ChatBubble> {
                 : Colors.grey.shade300),
           ),
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(widget.chatMessage.Messages),
-          ),
+              padding: const EdgeInsets.all(8.0),
+              child: widget.chatMessage.type == 'Text'
+                  ? Text(widget.chatMessage.Messages)
+                  : widget.chatMessage.type == 'Image'
+                      ? Container(
+                          height: 350.0,
+                          width: 200.0,
+                          decoration: BoxDecoration(
+                              image: DecorationImage(
+                                  image:
+                                      NetworkImage(widget.chatMessage.Messages),
+                                  fit: BoxFit.cover)),
+                        )
+                      : Container(
+                          height: 200.0,
+                          width: 280.0,
+                          child: VideoPlayer(
+                            url: widget.chatMessage.Messages,
+                            networkUrl: true,
+                          ),
+                        )),
         ),
       ),
     );

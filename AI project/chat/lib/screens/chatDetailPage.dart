@@ -3,6 +3,10 @@ import 'package:chat/components/chat_detail_page_appBar.dart';
 import 'package:chat/controller/messageController.dart';
 import 'package:chat/models/chat_Messages.dart';
 import 'package:chat/models/userDetail.dart';
+import 'package:chat/screens/home.dart';
+import 'package:chat/screens/imageScreen.dart';
+import 'package:chat/screens/mainPage.dart';
+import 'package:chat/screens/videoScreen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -33,14 +37,19 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
 
   Future getCamera() async {
     final pickedFile = await imagepicker.getImage(source: ImageSource.camera);
-
-    setState(() {
-      if (pickedFile != null) {
-        _cimage = File(pickedFile.path);
-      } else {
-        print('No image selected.');
-      }
-    });
+    if (pickedFile != null) {
+      _cimage = File(pickedFile.path);
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => ImageScreen(
+                  recName: widget.receiverName,
+                  msgDocId: widget.msgDocId,
+                  image: _cimage,
+                  userImage: widget.image)));
+    } else {
+      print('No image selected.');
+    }
   }
 
   File _image;
@@ -49,13 +58,19 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   Future getImage() async {
     final pickedFile = await imagepicker.getImage(source: ImageSource.gallery);
 
-    setState(() {
-      if (pickedFile != null) {
-        _cimage = File(pickedFile.path);
-      } else {
-        print('No image selected.');
-      }
-    });
+    if (pickedFile != null) {
+      _cimage = File(pickedFile.path);
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => ImageScreen(
+                  recName: widget.receiverName,
+                  msgDocId: widget.msgDocId,
+                  image: _cimage,
+                  userImage: widget.image)));
+    } else {
+      print('No image selected.');
+    }
   }
 
   File _video;
@@ -63,14 +78,20 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
 
   Future getvideo() async {
     final pickedFile = await videopicker.getVideo(source: ImageSource.gallery);
-
-    setState(() {
-      if (pickedFile != null) {
-        _video = File(pickedFile.path);
-      } else {
-        print('No image selected.');
-      }
-    });
+    if (pickedFile != null) {
+      _video = File(pickedFile.path);
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => VideoScreen(
+                    video: _video,
+                    msgDocId: widget.msgDocId,
+                    recName: widget.receiverName,
+                    userImage: widget.image,
+                  )));
+    } else {
+      print('No image selected.');
+    }
   }
 
   @override
@@ -81,31 +102,6 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   }
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) async {
-    //didChangeAppLifecycleState(state);
-
-    if (state == AppLifecycleState.inactive ||
-        state == AppLifecycleState.detached) {
-      print(
-          '//////////////////////APPLICATION ENDED/////////////////////////////////');
-      return;
-    }
-
-    final isBackground = state == AppLifecycleState.paused;
-
-    if (isBackground) {
-      // _msg.updateOnlineStatus(context, 'offline');
-
-    }
-
-    /* if (isBackground) {
-      // service.stop();
-    } else {
-      // service.start();
-    }*/
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
@@ -113,158 +109,167 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
         receiverName: widget.receiverName,
         image: widget.image,
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              reverse: true,
-              child: Container(
-                child: StreamBuilder(
-                  stream: _firestore
-                      .collection('messages')
-                      .doc(widget.msgDocId)
-                      .collection('conversation')
-                      .orderBy('dateTime', descending: false)
-                      .snapshots(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasError) {
-                      return Center(
-                        child: CircularProgressIndicator(
-                            valueColor:
-                                AlwaysStoppedAnimation<Color>(Colors.teal)),
-                      );
-                    }
+      body: WillPopScope(
+        onWillPop: () async {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => MainPage()));
+          return true;
+        },
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                reverse: true,
+                child: Container(
+                  child: StreamBuilder(
+                    stream: _firestore
+                        .collection('messages')
+                        .doc(widget.msgDocId)
+                        .collection('conversation')
+                        .orderBy('dateTime', descending: false)
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasError) {
+                        return Center(
+                          child: CircularProgressIndicator(
+                              valueColor:
+                                  AlwaysStoppedAnimation<Color>(Colors.teal)),
+                        );
+                      }
 
-                    if (!snapshot.hasData) {
-                      return Center(
-                        child: CircularProgressIndicator(
-                            valueColor:
-                                AlwaysStoppedAnimation<Color>(Colors.teal)),
-                      );
-                    }
+                      if (!snapshot.hasData) {
+                        return Center(
+                          child: CircularProgressIndicator(
+                              valueColor:
+                                  AlwaysStoppedAnimation<Color>(Colors.teal)),
+                        );
+                      }
 
-                    final messages = snapshot.data.docs;
-                    String text, sender, receiver, dateTime, type;
-                    List<ChatBubble> msgBubble = [];
-                    for (var msgs in messages) {
-                      chatMessage.add(ChatMessage(Messages: null, isMe: null));
-                      msgBubble.add(ChatBubble(
-                          chatMessage: ChatMessage(
-                              Messages: msgs.data()['text'],
-                              dateTime: msgs.data()['dateTime'],
-                              isMe: msgs.data()['senderName'] ==
-                                      Provider.of<UserDetails>(context,
-                                              listen: false)
-                                          .getUserName
-                                  ? true
-                                  : false,
-                              type: msgs.data()['type'])));
-                    }
-                    return msgBubble.isNotEmpty
-                        ? Column(
-                            children: msgBubble,
-                          )
-                        : Container(
-                            height: MediaQuery.of(context).size.height * 0.75,
-                            child: Center(
-                              child: Text(
-                                'No messages',
-                                style: TextStyle(
-                                    color: Colors.teal[100],
-                                    fontSize: 30.0,
-                                    fontWeight: FontWeight.bold),
+                      final messages = snapshot.data.docs;
+                      String text, sender, receiver, dateTime, type;
+                      List<ChatBubble> msgBubble = [];
+                      for (var msgs in messages) {
+                        chatMessage
+                            .add(ChatMessage(Messages: null, isMe: null));
+                        msgBubble.add(ChatBubble(
+                            chatMessage: ChatMessage(
+                                Messages: msgs.data()['text'],
+                                dateTime: msgs.data()['dateTime'],
+                                isMe: msgs.data()['senderName'] ==
+                                        Provider.of<UserDetails>(context,
+                                                listen: false)
+                                            .getUserName
+                                    ? true
+                                    : false,
+                                type: msgs.data()['type'])));
+                      }
+                      return msgBubble.isNotEmpty
+                          ? Column(
+                              children: msgBubble,
+                            )
+                          : Container(
+                              height: MediaQuery.of(context).size.height * 0.75,
+                              child: Center(
+                                child: Text(
+                                  'No messages',
+                                  style: TextStyle(
+                                      color: Colors.teal[100],
+                                      fontSize: 30.0,
+                                      fontWeight: FontWeight.bold),
+                                ),
                               ),
-                            ),
-                          );
-                  },
+                            );
+                    },
+                  ),
                 ),
               ),
             ),
-          ),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 8.0),
-            height: 60.0,
-            width: MediaQuery.of(context).size.width,
-            child: Row(
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    showModalBottomSheet(
-                        backgroundColor: Colors.transparent,
-                        context: context,
-                        builder: (context) {
-                          return bottomSheet();
-                        });
-                  },
-                  child: Container(
-                    height: 40,
-                    width: 40,
-                    decoration: BoxDecoration(
-                      color: Colors.teal,
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    child: Icon(
-                      Icons.add,
-                      color: Colors.white,
-                      size: 21,
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 8.0),
+              height: 60.0,
+              width: MediaQuery.of(context).size.width,
+              child: Row(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      showModalBottomSheet(
+                          backgroundColor: Colors.transparent,
+                          context: context,
+                          builder: (context) {
+                            return bottomSheet();
+                          });
+                    },
+                    child: Container(
+                      height: 40,
+                      width: 40,
+                      decoration: BoxDecoration(
+                        color: Colors.teal,
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      child: Icon(
+                        Icons.add,
+                        color: Colors.white,
+                        size: 21,
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(
-                  width: 10,
-                ),
-                Expanded(
-                  child: TextFormField(
-                    controller: _message,
-                    maxLines: 10,
-                    decoration: InputDecoration(
-                        hintText: "Type message...",
-                        hintStyle: TextStyle(
-                          color: Colors.teal,
-                        ),
-                        border: InputBorder.none),
+                  SizedBox(
+                    width: 10,
                   ),
-                ),
-                GestureDetector(
-                  onTap: () async {
-                    _msgController = MessageController();
-                    try {
-                      if (_message.text.isNotEmpty) {
-                        _msgController.sendTextMessage(
-                            widget.receiverName,
-                            Provider.of<UserDetails>(context, listen: false)
-                                .getUserName,
-                            _message.text,
-                            'Text',
-                            widget.msgDocId);
-                        _msgController.sendAnswerByBot(
-                            myName:
-                                Provider.of<UserDetails>(context, listen: false)
-                                    .getUserName,
-                            senderName: widget.receiverName,
-                            message: _message.text,
-                            type: 'Text',
-                            msgDocId: widget.msgDocId);
+                  Expanded(
+                    child: TextFormField(
+                      controller: _message,
+                      maxLines: 10,
+                      decoration: InputDecoration(
+                          hintText: "Type message...",
+                          hintStyle: TextStyle(
+                            color: Colors.teal,
+                          ),
+                          border: InputBorder.none),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () async {
+                      FocusScope.of(context).requestFocus(FocusNode());
+                      _msgController = MessageController();
+                      try {
+                        if (_message.text.isNotEmpty) {
+                          _msgController.sendTextMessage(
+                              widget.receiverName,
+                              Provider.of<UserDetails>(context, listen: false)
+                                  .getUserName,
+                              _message.text,
+                              'Text',
+                              widget.msgDocId);
+                          _msgController.sendAnswerByBot(
+                              myName: Provider.of<UserDetails>(context,
+                                      listen: false)
+                                  .getUserName,
+                              senderName: widget.receiverName,
+                              message: _message.text,
+                              type: 'Text',
+                              msgDocId: widget.msgDocId);
 
-                        _message.clear();
+                          _message.clear();
+                        }
+                      } catch (e) {
+                        print(e);
                       }
-                    } catch (e) {
-                      print(e);
-                    }
-                  },
-                  child: CircleAvatar(
-                    backgroundColor: Colors.teal,
-                    radius: 25.0,
-                    child: Icon(
-                      Icons.send_sharp,
-                      color: Colors.white,
+                    },
+                    child: CircleAvatar(
+                      backgroundColor: Colors.teal,
+                      radius: 25.0,
+                      child: Icon(
+                        Icons.send_sharp,
+                        color: Colors.white,
+                      ),
                     ),
-                  ),
-                )
-              ],
+                  )
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

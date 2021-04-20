@@ -64,7 +64,6 @@ class CreateUser {
           return false;
         }
       });
-
       return true;
     } catch (e) {
       return false;

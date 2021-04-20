@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+
 import 'package:chat/controller/chatBotController.dart';
 import 'package:chat/models/userDetail.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -18,7 +21,7 @@ class MessageController {
       'senderName': senderName,
       'receiverName': recName,
       'dateTime': DateTime.now().toString(),
-      'type': 'Text'
+      'type': type
     });
   }
 
@@ -47,5 +50,39 @@ class MessageController {
         .collection('user')
         .doc(Provider.of<UserDetails>(context, listen: false).getUserDocID)
         .update({'status': status});
+  }
+
+  Future<bool> sendImage(
+      String recName, String senderName, File image, String msgDocId) async {
+    try {
+      String uploadedImgUrl;
+      firebase_storage.Reference storageReference = firebase_storage
+          .FirebaseStorage.instance
+          .ref('messengerImages/${DateTime.now().toString()}');
+      await storageReference.putFile(image);
+      uploadedImgUrl = await storageReference.getDownloadURL();
+      sendTextMessage(recName, senderName, uploadedImgUrl, 'Image', msgDocId);
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    }
+  }
+
+  Future<bool> sendVideo(
+      String recName, String senderName, File video, String msgDocId) async {
+    try {
+      String uploadedImgUrl;
+      firebase_storage.Reference storageReference = firebase_storage
+          .FirebaseStorage.instance
+          .ref('messengerVideos/${DateTime.now().toString()}');
+      await storageReference.putFile(video);
+      uploadedImgUrl = await storageReference.getDownloadURL();
+      sendTextMessage(recName, senderName, uploadedImgUrl, 'Video', msgDocId);
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    }
   }
 }

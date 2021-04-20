@@ -11,7 +11,38 @@ void main() async {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    //didChangeAppLifecycleState(state);
+
+    if (state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.detached) {
+      print(
+          '//////////////////////APPLICATION ENDED/////////////////////////////////');
+      return;
+    }
+
+    final isBackground = state == AppLifecycleState.paused;
+
+    if (isBackground) {
+      // _msg.updateOnlineStatus(context, 'offline');
+      print(
+          '//////////////////////APPLICATION ENDED 2/////////////////////////////////');
+    }
+
+    /* if (isBackground) {
+      // service.stop();
+    } else {
+      // service.start();
+    }*/
+  }
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(

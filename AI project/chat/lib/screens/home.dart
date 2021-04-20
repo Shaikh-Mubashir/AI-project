@@ -124,96 +124,96 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     double height = MediaQuery.of(context).size.height;
-    return Scaffold(
-      body: WillPopScope(
-        onWillPop: onWillPopGoToLogIn,
-        child: Stack(
-          children: [
-            SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 12.0),
-                    child: TextFormField(
-                      decoration: InputDecoration(
-                          hintText: 'Search....',
-                          focusedBorder: InputBorder.none,
-                          hintStyle: TextStyle(
-                            color: Colors.grey.shade400,
-                          ),
-                          prefixIcon: Icon(
-                            Icons.search,
-                            color: Colors.grey.shade400,
-                          ),
-                          filled: true,
-                          fillColor: Colors.grey.shade100,
-                          contentPadding: EdgeInsets.all(8),
-                          enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30),
-                              borderSide:
-                                  BorderSide(color: Colors.grey.shade100))),
-                    ),
+    return WillPopScope(
+      onWillPop: onWillPopGoToLogIn,
+      child: Stack(
+        children: [
+          SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 12.0),
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                        hintText: 'Search....',
+                        focusedBorder: InputBorder.none,
+                        hintStyle: TextStyle(
+                          color: Colors.grey.shade400,
+                        ),
+                        prefixIcon: Icon(
+                          Icons.search,
+                          color: Colors.grey.shade400,
+                        ),
+                        filled: true,
+                        fillColor: Colors.grey.shade100,
+                        contentPadding: EdgeInsets.all(8),
+                        enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30),
+                            borderSide:
+                                BorderSide(color: Colors.grey.shade100))),
                   ),
-                  Container(
-                    child: StreamBuilder(
-                      stream: _firestore
-                          .collection('user')
-                          .doc(Provider.of<UserDetails>(context, listen: false)
-                              .getUserDocID)
-                          .collection('friends')
-                          .snapshots(),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasError) {
-                          return Center(
-                            child: CircularProgressIndicator(
-                              valueColor:
-                                  AlwaysStoppedAnimation<Color>(Colors.teal),
-                            ),
-                          );
-                        }
-                        if (!snapshot.hasData) {
-                          return Center(
-                            child: CircularProgressIndicator(
-                              valueColor:
-                                  AlwaysStoppedAnimation<Color>(Colors.teal),
-                            ),
-                          );
-                        }
-                        List<ChatUsersList> friends = [];
-                        final frndsData = snapshot.data.docs;
-                        for (var data in frndsData) {
-                          friends.add(ChatUsersList(
-                            name: data.data()['name'],
-                            msgDocId: data.data()['messageDocId'],
-                            userDocId: data.data()['userDocId'],
-                          ));
-                        }
-                        return friends.isNotEmpty
-                            ? Column(
-                                children: friends,
-                              )
-                            : Container(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.6,
-                                width: MediaQuery.of(context).size.width,
-                                child: Center(
-                                  child: Text(
-                                    'No Chats available',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 30,
-                                        color: Colors.teal[200]),
-                                  ),
+                ),
+                Container(
+                  child: StreamBuilder(
+                    stream: _firestore
+                        .collection('user')
+                        .doc(Provider.of<UserDetails>(context, listen: false)
+                            .getUserDocID)
+                        .collection('friends')
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasError) {
+                        return Center(
+                          child: CircularProgressIndicator(
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(Colors.teal),
+                          ),
+                        );
+                      }
+                      if (!snapshot.hasData) {
+                        return Center(
+                          child: CircularProgressIndicator(
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(Colors.teal),
+                          ),
+                        );
+                      }
+                      List<ChatUsersList> friends = [];
+                      final frndsData = snapshot.data.docs;
+                      for (var data in frndsData) {
+                        friends.add(ChatUsersList(
+                          name: data.data()['name'],
+                          msgDocId: data.data()['messageDocId'],
+                          userDocId: data.data()['userDocId'],
+                        ));
+                      }
+                      return friends.isNotEmpty
+                          ? Column(
+                              children: friends,
+                            )
+                          : Container(
+                              height: MediaQuery.of(context).size.height * 0.6,
+                              width: MediaQuery.of(context).size.width,
+                              child: Center(
+                                child: Text(
+                                  'No Chats available',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 30,
+                                      color: Colors.teal[200]),
                                 ),
-                              );
-                      },
-                    ),
-                  )
-                ],
-              ),
+                              ),
+                            );
+                    },
+                  ),
+                )
+              ],
             ),
-            Align(
+          ),
+          Padding(
+            padding: EdgeInsets.only(right: 7.0, bottom: 7.0),
+            child: Align(
               alignment: Alignment.bottomRight,
               child: FloatingActionButton(
                   tooltip: 'Add a new Friend',
@@ -223,68 +223,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) => AddFriends()));
                   }),
-            )
-          ],
-        ),
+            ),
+          )
+        ],
       ),
     );
   }
 }
-// StreamBuilder(
-// stream: _firestore
-//     .collection('user')
-// .doc(Provider.of<UserDetails>(context, listen: false)
-// .getUserDocID)
-// .collection('friends')
-// .snapshots(),
-// builder: (context, snapshot) {
-// if (snapshot.hasError) {
-// return Center(
-// child: CircularProgressIndicator(
-// valueColor: AlwaysStoppedAnimation<Color>(Colors.teal)),
-// );
-// }
-// if (snapshot.connectionState == ConnectionState.waiting) {
-// return Center(
-// child: CircularProgressIndicator(
-// valueColor: AlwaysStoppedAnimation<Color>(Colors.teal)),
-// );
-// }
-//
-// List<String> docIds = [];
-// List<String> msgIds = [];
-// final data = snapshot.data.docs;
-// for (var frnds in data) {
-// docIds.add(frnds.data()['userDocId']);
-// msgIds.add(frnds.data()['messageDocId']);
-// }
-// print(docIds);
-// getUserList(docIds, msgIds);
-// print(Provider.of<ChatModel>(context, listen: false)
-//     .userMessages);
-// return Consumer<ChatModel>(
-// builder: (context, data, child) {
-// return data.userMessages.length != 0
-// ? ListView.builder(
-// itemCount: data.userMessages.length,
-// itemBuilder: (context, i) {
-// return data.userMessages.isEmpty
-// ? Text('You have no chats available.')
-//     : ChatUsersList(
-// msgDocId: data.userMessages[i].docId,
-// text: data.userMessages[i].text,
-// secondarytext:
-// data.userMessages[i].secondarytext,
-// image: data.userMessages[i].image,
-// time: data.userMessages[i].time);
-// },
-// )
-//     : Center(
-// child: CircularProgressIndicator(
-// valueColor:
-// AlwaysStoppedAnimation<Color>(Colors.teal)),
-// );
-// },
-// );
-// },
-// ),
