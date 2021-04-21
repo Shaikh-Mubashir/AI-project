@@ -84,11 +84,11 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
           context,
           MaterialPageRoute(
               builder: (context) => VideoScreen(
-                    video: _video,
-                    msgDocId: widget.msgDocId,
-                    recName: widget.receiverName,
-                    userImage: widget.image,
-                  )));
+                video: _video,
+                msgDocId: widget.msgDocId,
+                recName: widget.receiverName,
+                userImage: widget.image,
+              )));
     } else {
       print('No image selected.');
     }
@@ -133,7 +133,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                         return Center(
                           child: CircularProgressIndicator(
                               valueColor:
-                                  AlwaysStoppedAnimation<Color>(Colors.teal)),
+                              AlwaysStoppedAnimation<Color>(Colors.teal)),
                         );
                       }
 
@@ -141,7 +141,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                         return Center(
                           child: CircularProgressIndicator(
                               valueColor:
-                                  AlwaysStoppedAnimation<Color>(Colors.teal)),
+                              AlwaysStoppedAnimation<Color>(Colors.teal)),
                         );
                       }
 
@@ -156,29 +156,29 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                                 Messages: msgs.data()['text'],
                                 dateTime: msgs.data()['dateTime'],
                                 isMe: msgs.data()['senderName'] ==
-                                        Provider.of<UserDetails>(context,
-                                                listen: false)
-                                            .getUserName
+                                    Provider.of<UserDetails>(context,
+                                        listen: false)
+                                        .getUserName
                                     ? true
                                     : false,
                                 type: msgs.data()['type'])));
                       }
                       return msgBubble.isNotEmpty
                           ? Column(
-                              children: msgBubble,
-                            )
+                        children: msgBubble,
+                      )
                           : Container(
-                              height: MediaQuery.of(context).size.height * 0.75,
-                              child: Center(
-                                child: Text(
-                                  'No messages',
-                                  style: TextStyle(
-                                      color: Colors.teal[100],
-                                      fontSize: 30.0,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                            );
+                        height: MediaQuery.of(context).size.height * 0.75,
+                        child: Center(
+                          child: Text(
+                            'No messages',
+                            style: TextStyle(
+                                color: Colors.teal[100],
+                                fontSize: 30.0,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      );
                     },
                   ),
                 ),
@@ -216,7 +216,6 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                   SizedBox(
                     width: 10,
                   ),
-<<<<<<< Updated upstream
                   Expanded(
                     child: TextFormField(
                       controller: _message,
@@ -227,36 +226,6 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                             color: Colors.teal,
                           ),
                           border: InputBorder.none),
-=======
-                ),
-                GestureDetector(
-                  onTap: ()async {
-                  await  bot.initChatBot();
-                    await bot.getAnswerByChatBot(_message.text);
-                    _msgController = MessageController();
-                    try {
-                      if (_message.text.isNotEmpty) {
-                        _msgController.sendTextMessage(
-                            widget.receiverName,
-                            Provider.of<UserDetails>(context, listen: false)
-                                .getUserName,
-                            _message.text,
-                            'Text',
-                            widget.msgDocId);
-                        _message.clear();
-                      }
-
-                    } catch (e) {
-                      print(e);
-                    }
-                  },
-                  child: CircleAvatar(
-                    backgroundColor: Colors.teal,
-                    radius: 25.0,
-                    child: Icon(
-                      Icons.send_sharp,
-                      color: Colors.white,
->>>>>>> Stashed changes
                     ),
                   ),
                   GestureDetector(
@@ -274,7 +243,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                               widget.msgDocId);
                           _msgController.sendAnswerByBot(
                               myName: Provider.of<UserDetails>(context,
-                                      listen: false)
+                                  listen: false)
                                   .getUserName,
                               senderName: widget.receiverName,
                               message: _message.text,
@@ -311,7 +280,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
       width: double.infinity,
       child: Card(
         shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+        RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
         margin: EdgeInsets.all(18),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
