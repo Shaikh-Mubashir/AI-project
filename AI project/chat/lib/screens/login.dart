@@ -1,3 +1,8 @@
+import 'dart:convert';
+import 'dart:math';
+import 'dart:typed_data';
+
+import 'package:chat/Services.dart';
 import 'package:chat/components/alertBoxes.dart';
 import 'package:chat/screens/mainPage.dart';
 import 'package:chat/screens/signUp.dart';
@@ -111,6 +116,29 @@ class _LoginState extends State<Login> {
                   SizedBox(
                     height: 70,
                   ),
+                  TextButton(
+                      onPressed: () {
+                        String s = "HelloWorld";
+                        SDESServices enc = SDESServices();
+                        //Generating random key
+                        Random rand = Random();
+                        int j = rand.nextInt(s.length);
+                        String key = s.codeUnitAt(j).toRadixString(2);
+                        key = "0" + key + "10";
+                        print(key);
+                        List<String> keyValues = enc.keyGeneration(key);
+                        print("K2:- ${keyValues[1]}");
+                        List<String> CT =
+                            enc.sDesEncryption(s, keyValues[0], keyValues[1]);
+                        print(CT);
+                        List<int> list = [];
+                        CT.forEach((element) {
+                          list.add(int.parse(element, radix: 2));
+                        });
+                        print(list);
+                        print(utf8.decode(list, allowMalformed: true));
+                      },
+                      child: Text("Encrypt")),
                   RaisedButton(
                     padding: EdgeInsets.symmetric(horizontal: 80, vertical: 15),
                     child: Text(
@@ -127,24 +155,26 @@ class _LoginState extends State<Login> {
                         _createUser = CreateUser();
                         //progress.showWithText('Loading...');
                         _alert.loadingAlertBox(context);
-                        bool check = await _createUser.logInUser(
-                            context, _username.text, _password.text);
-                        print('At log in screen =>?$check');
-                        if (check) {
-                          Navigator.pop(context);
-                          print('printing => $check');
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => MainPage(),
-                            ),
-                          );
-                        } else {
-                          Navigator.pop(context);
-                          _alert.simpleAlertBox(context, 'Failed to Log in.',
-                              'Wrong user email or password.');
-                          print('nhi chl rha');
-                        }
+                        await _createUser
+                            .logInUser(context, _username.text, _password.text)
+                            .then((check) {
+                          print('At log in screen =>?$check');
+                          if (check) {
+                            Navigator.pop(context);
+                            print('printing => $check');
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => MainPage(),
+                              ),
+                            );
+                          } else {
+                            Navigator.pop(context);
+                            _alert.simpleAlertBox(context, 'Failed to Log in.',
+                                'Wrong user email or password.');
+                            print('nhi chl rha');
+                          }
+                        });
                         // } catch (e) {
                         // _alert.simpleAlertBox(context, 'Failed to Log in.',
                         //     'Something went wrong.');
