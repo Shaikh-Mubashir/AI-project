@@ -33,6 +33,7 @@ class SDESServices {
     List<String> binary = convertStringToBinary(pt);
     List<String> cipherText = [];
     for (var data in binary) {
+      print('Data------$data');
       //apply IP
       String ipOtp = applyIP(data);
       int length = ipOtp.length;
@@ -48,7 +49,7 @@ class SDESServices {
       String xorOtp = XOR(epOtp, k1);
 
       length = xorOtp.length;
-      mid = (length / 2).toInt();
+      mid = length ~/ 2;
       String xorLeft = xorOtp.substring(0, mid);
       String xorRight = xorOtp.substring(mid, length);
       //applying s0 and s1
@@ -62,8 +63,10 @@ class SDESServices {
       //XOR with left
       String result = XOR(p4Result, left);
 
-      //swapping
+      ///swapping
       String swapResult = right + result;
+      length = swapResult.length;
+      mid = length ~/ 2;
 
       ///Round 2
       left = swapResult.substring(0, mid);
@@ -74,7 +77,8 @@ class SDESServices {
 
       //XOR with k2
       xorOtp = XOR(epOtp, k2);
-
+      length = xorOtp.length;
+      mid = length ~/ 2;
       xorLeft = xorOtp.substring(0, mid);
       xorRight = xorOtp.substring(mid, length);
 
@@ -94,6 +98,76 @@ class SDESServices {
     return cipherText;
   }
 
+  List<String> sDesDecryption(String pt, String k1, String k2) {
+    List<String> binary = convertStringToBinary(pt);
+    List<String> cipherText = [];
+    print('length: ${pt.length}');
+    for (var data in binary) {
+      print('Data------$data');
+      //apply IP
+      String ipOtp = applyIP(data);
+      int length = ipOtp.length;
+      int mid = length ~/ 2;
+      String left = ipOtp.substring(0, mid);
+      String right = ipOtp.substring(mid, length);
+
+      ///Round 2
+      //applying EP
+      String epOtp = applyEP(right);
+
+      //XOR with k2
+      String xorOtp = XOR(epOtp, k2);
+      length = xorOtp.length;
+      mid = length ~/ 2;
+      String xorLeft = xorOtp.substring(0, mid);
+      String xorRight = xorOtp.substring(mid, length);
+
+      //applying s0 and s1
+      String s0Result = applys0(xorLeft);
+
+      String s1Result = applys1(xorRight);
+
+      //applying P4
+      String p4Result = applyP4(s0Result + s1Result);
+      //XOR with left
+      String result = XOR(p4Result, left);
+
+      ///swapping
+      String swapResult = right + result;
+      length = swapResult.length;
+      mid = length ~/ 2;
+      left = swapResult.substring(0, mid);
+      right = swapResult.substring(mid, length);
+
+      ///Round 1
+      //ep
+      epOtp = applyEP(right);
+
+      //xor with k1
+      xorOtp = XOR(epOtp, k1);
+
+      length = xorOtp.length;
+      mid = length ~/ 2;
+      xorLeft = xorOtp.substring(0, mid);
+      xorRight = xorOtp.substring(mid, length);
+      //applying s0 and s1
+      s0Result = applys0(xorLeft);
+
+      s1Result = applys1(xorRight);
+
+      //applying P4
+      p4Result = applyP4(s0Result + s1Result);
+
+      //XOR with left
+      result = XOR(p4Result, left);
+
+      //applying Ip inverse
+      cipherText.add(applyIpInv(result + right));
+    }
+
+    return cipherText;
+  }
+
   String applys0(String a) {
     List<List<int>> s0 = [
       [1, 0, 3, 2],
@@ -103,18 +177,22 @@ class SDESServices {
     ];
     int row = int.parse("${a[0]}${a[3]}", radix: 2);
     int column = int.parse("${a[1]}${a[2]}", radix: 2);
+
     int result = s0[row][column];
     String binary = result.toRadixString(2);
+
     if (binary == "0") {
       binary = "00";
     } else if (binary == "1") {
       binary = "01";
-    } else if (binary == "2") {
-      binary = "10";
-    } else {
-      binary = "11";
     }
+    // else if (binary == "2") {
+    //   binary = "10";
+    // }
 
+    else {
+      binary = binary;
+    }
     return binary;
   }
 
@@ -130,15 +208,16 @@ class SDESServices {
     int column = int.parse("${a[1]}${a[2]}", radix: 2);
     int result = s1[row][column];
     String binary = result.toRadixString(2);
-
     if (binary == "0") {
       binary = "00";
     } else if (binary == "1") {
       binary = "01";
-    } else if (binary == "2") {
-      binary = "10";
-    } else {
-      binary = "11";
+    }
+    // else if (binary == "2") {
+    //   binary = "10";
+    // }
+    else {
+      binary = binary;
     }
 
     return binary;
@@ -147,9 +226,17 @@ class SDESServices {
   List<String> convertStringToBinary(String s) {
     List<String> bytes = [];
     for (int i = 0; i < s.length; i++) {
+      print('printing:- ${s[i]}');
       var abc = s.codeUnitAt(i).toRadixString(2);
-      bytes.add("0" + abc);
+      if (abc.length > 7) {
+        print('in if');
+        bytes.add(abc);
+      } else {
+        print('in else');
+        bytes.add("0" + abc);
+      }
     }
+    print("Bytres----$bytes");
     return bytes;
   }
 

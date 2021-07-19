@@ -2,7 +2,8 @@ import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
 
-import 'package:chat/Services.dart';
+import 'package:chat/Services/ascii.dart';
+import 'package:chat/Services/s-desServices.dart';
 import 'package:chat/components/alertBoxes.dart';
 import 'package:chat/screens/mainPage.dart';
 import 'package:chat/screens/signUp.dart';
@@ -118,25 +119,43 @@ class _LoginState extends State<Login> {
                   ),
                   TextButton(
                       onPressed: () {
-                        String s = "HelloWorld";
+                        String s = "ilhan";
                         SDESServices enc = SDESServices();
                         //Generating random key
                         Random rand = Random();
                         int j = rand.nextInt(s.length);
                         String key = s.codeUnitAt(j).toRadixString(2);
                         key = "0" + key + "10";
-                        print(key);
+                        print("MY KEY:- $key");
                         List<String> keyValues = enc.keyGeneration(key);
+                        print("K1:- ${keyValues[0]}");
                         print("K2:- ${keyValues[1]}");
                         List<String> CT =
                             enc.sDesEncryption(s, keyValues[0], keyValues[1]);
                         print(CT);
                         List<int> list = [];
+                        String res = "";
                         CT.forEach((element) {
-                          list.add(int.parse(element, radix: 2));
+                          // list.add(int.parse(element, radix: 2));
+                          res = res + myAscii[element];
                         });
-                        print(list);
-                        print(utf8.decode(list, allowMalformed: true));
+                        //print(list);
+                        //print(utf8.decode(list, allowMalformed: true));
+                        print(res);
+                        print(
+                            "======================================================");
+                        List<String> PT =
+                            enc.sDesDecryption(res, keyValues[0], keyValues[1]);
+                        print(PT);
+                        List<int> list2 = [];
+                        String res2 = "";
+                        PT.forEach((element) {
+                          // list.add(int.parse(element, radix: 2));
+                          res2 = res2 + myAscii[element];
+                        });
+                        //print(list);
+                        //print(utf8.decode(list, allowMalformed: true));
+                        print(res2);
                       },
                       child: Text("Encrypt")),
                   RaisedButton(
